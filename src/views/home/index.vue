@@ -1,18 +1,15 @@
 <template>
   <div id="app">
-    <router-view/>
+    <p>home component</p>
   </div>
 </template>
 <script>
 export default {
   data () {
-    return {
-      radio: '1'
-    }
+    return {}
   }
 }
 </script>
-
-<style lang="less">
+<style lang="less" scoped>
 
 </style>
