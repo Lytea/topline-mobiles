@@ -25,25 +25,27 @@
   </div>
 </template>
 <script>
-import axios from 'axios'
+import { login } from '@/api/user'
 export default {
   name: 'LoginIndex',
   data () {
     return {
       user: {
         mobile: '14797356373',
-        code: '123456'
+        code: '246810'
       }
     }
   },
   methods: {
     async handleLogin () {
-      const res = await axios({
-        method: 'POST',
-        url: 'http://toutiao.course.itcast.cn/app/v1_0/authorizations',
-        data: this.user
-      })
-      console.log(res)
+      try {
+        const data = await login(this.user)
+        // console.log(data)
+        this.$store.commit('setUser', data)
+      } catch (err) {
+        console.log(err)
+        console.log('登录失败')
+      }
     }
   }
 }
