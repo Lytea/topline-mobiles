@@ -25,7 +25,11 @@
     />
     </van-cell-group>
     <div class="login_btn">
-      <van-button type="info" class="btn" @click.prevent="handleLogin">登录</van-button>
+      <van-button
+        :loading="loginLoading"
+        type="info"
+        class="btn"
+        @click.prevent="handleLogin">登录</van-button>
     </div>
     </form>
   </div>
@@ -39,7 +43,8 @@ export default {
       user: {
         mobile: '14797356373',
         code: '246810'
-      }
+      },
+      loginLoading: false // 登录禁用状态
     }
   },
   created () {
@@ -47,22 +52,31 @@ export default {
   },
   methods: {
     async handleLogin () {
+      this.loginLoading = true
       try {
-        this.$validator.validate().then(async valid => {
-          // 如果表单验证失败，则什么都不做
-          if (!valid) {
-            return
-          }
-          // 如果表单验证通过，提交表单
-          const data = await login(this.user)
-          // console.log(data)
-          // 通过提交mutation函数，更新vuex容器中的状态
-          this.$store.commit('setUser', data)
+        const valid = await this.$validator.validate()
+        // 如果表单验证失败，则什么都不做
+        if (!valid) {
+          // 验证失败，代码不会往后执行，也不会抛出异常进入catch，
+          // 所以也不会执行后面的loginLoading，所以验证失败后登录状态仍然为true，
+          // 所以要在表单验证失败时，就让他loginLoading为false
+          this.loginLoading = false
+          return
+        }
+        // 如果表单验证通过，提交表单
+        const data = await login(this.user)
+        // console.log(data)
+        // 通过提交mutation函数，更新vuex容器中的状态
+        this.$store.commit('setUser', data)
+        // 跳转到登录页面
+        this.$router.push({
+          name: 'home'
         })
       } catch (err) {
         console.log(err)
         console.log('登录失败')
       }
+      this.loginLoading = false
     },
     // 自定义验证消息
     configCustomMessages () {
