@@ -36,6 +36,7 @@
 </template>
 <script>
 import { login } from '@/api/user'
+
 export default {
   name: 'LoginIndex',
   data () {
@@ -72,9 +73,10 @@ export default {
         this.$router.push({
           name: 'home'
         })
+        this.$toast.success('登录成功')
       } catch (err) {
         console.log(err)
-        console.log('登录失败')
+        this.$toast.fail('登录失败')
       }
       this.loginLoading = false
     },
