@@ -12,7 +12,12 @@
             isLoading用来控制下拉刷新的loading状态
             下拉刷新的时候，它会自动将loading设置为true
              @refresh当下拉刷新的时候回触发-->
-          <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+          <van-pull-refresh
+            v-model="channelItem.downPullLoading"
+            :success-text="channelItem.downPullSuccessText"
+            :success-duration="1000"
+            @refresh="onRefresh"
+          >
             <!-- 列表组件：提供上拉加载更多数据的功能
             loading用来控制加载中的状态
             finished用来控制是否加载完毕
@@ -102,6 +107,7 @@ export default {
       await this.$sleep(800)
       let data = []
       data = await this.loadArticle()
+      // 解决上拉加载数据完毕后的提示信息
       if (!data.pre_timestamp && !data.length) {
         // 频道数据加载完毕，组件会自动给出提示，
         this.activeArticle.upPullFinished = true
@@ -140,11 +146,31 @@ export default {
       // }, 3000)
     },
     // 下拉刷新列表数据
-    onRefresh () {
-      console.log('onRefresh')
-      setTimeout(() => {
-        this.isLoading = false
-      }, 3000)
+    async onRefresh () {
+      // 备份加载下一页数据的时间戳
+      const timestamp = this.activeArticle.timestamp
+      this.activeArticle.timestamp = Date.now()
+      const data = await this.loadArticle()
+      // 如果有数据，把数据重置到频道的文章列表中
+      if (data.results.length) {
+        // 将当前的最新内容重置到频道列表中
+        this.activeArticle.articles = data.results
+        // 由于你重置了数据，那么当前数据的pre_timestamp就是上拉加载更多的下一页数据的时间戳
+        this.activeArticle.timestamp = data.pre_timestamp
+        this.activeArticle.downPullSuccessText = '更新成功'
+        // 如果加载时不满一屏，需要重新onload
+        this.onLoad()
+      } else {
+        // 如果没有数据，提示“已是最新数据”信息
+        this.activeArticle.downPullSuccessText = '已是最新数据'
+      }
+      this.activeArticle.downPullLoading = false
+      // 没有最新数据，将原来的用于下一页的时间戳恢复过来
+      this.activeArticle.timestamp = timestamp
+      // console.log('onRefresh')
+      // setTimeout(() => {
+      //   this.isLoading = false
+      // }, 3000)
     },
     // （只是请求）请求当前频道相关的数据，有可能是上拉刷新的请求，也有可能是下拉加载更多的请求
     async loadArticle () {
