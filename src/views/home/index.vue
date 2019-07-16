@@ -66,6 +66,22 @@ export default {
       return this.channels[this.activeChannelIndex]
     }
   },
+  watch: {
+    /**
+     * 监视容器中的user用户
+     * 记住：凡是能this.出来的成员，都可以在这里监视
+     * 由于路由缓存了，所以这里监视用户的登录状态，如果登录了则加载用户频道列表，
+     */
+    async '$store.state.user' () {
+      // 重新加载用户频道列表
+      this.loadChannel()
+      // 频道列表改变，重新加载当前频道的数据
+      this.activeArticle.upPullLoading = true // 手动加入loading效果
+      await this.onLoad()
+      // 解决不满一屏的问题
+      // await this.onLoad()
+    }
+  },
   created () {
     this.loadChannel()
   },
