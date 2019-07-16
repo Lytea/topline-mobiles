@@ -58,27 +58,35 @@ export default {
   },
   methods: {
     async loadChannel () {
+      // 判断用户是否登录
       const { user } = this.$store.state
-      let channels = []
+      let channel = [] // 存放本地存储列表
       if (user) {
         // 已登录
         const data = await getUserChannels()
-        console.log(data)
-        channels = data.channels
+        // console.log(data)
+        channel = data.channels
       } else {
-        // 未登录
+        // 未登录(判断本地存储是否有数据)
         // 如果有本地存储，就使用本地存储推荐的频道列表
-        const loaclChannel = JSON.parse(window.localStorage.getItem('channels'))
-        if (loaclChannel) {
-          channels = loaclChannel
+        const localChannel = JSON.parse(window.localStorage.getItem('channels'))
+        if (localChannel) {
+          channel = localChannel
         } else {
           // 如果没有本地存储，就使用用户频道列表
           const data = await getUserChannels()
-          console.log(data)
-          channels = data.channels
+          // console.log(data)
+          channel = data.channels
         }
       }
-      this.channels = channels
+      // 修改channel数据结构，
+      channel.forEach(item => {
+        item.articles = [] // 用来存储当前文章的列表
+        item.downPullLoading = false // 控制当前频道的下拉刷新状态
+        item.upPullLoading = false // 控制当前频道的上拉加载数据的状态
+        item.upPullFinished = false // 控制当前频道数据是否加载完毕
+      })
+      this.channels = channel // 把修改channel的数据赋给外面定义的channels
     },
     // 上拉加载数据
     onLoad () {

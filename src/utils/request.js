@@ -10,7 +10,9 @@ const request = axios.create({
 })
 
 request.interceptors.request.use(function (config) {
+  // 判断用户是否登录
   const { user } = store.state
+  // 如果用户已登录就为请求接口统一添加用户 token
   if (user) {
     config.headers.Authorization = `Bearer ${user.token}`
   }
