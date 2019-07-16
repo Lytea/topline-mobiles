@@ -99,8 +99,16 @@ export default {
     },
     // 上拉加载数据
     async onLoad () {
+      await this.$sleep(800)
       let data = []
       data = await this.loadArticle()
+      if (!data.pre_timestamp && !data.length) {
+        // 频道数据加载完毕，组件会自动给出提示，
+        this.activeArticle.upPullFinished = true
+        // 取消loading状态
+        this.activeArticle.upPullLoading = false
+        return
+      }
       // pre_timestamp 下一页的页码 results 文章列表
       // console.log(data)
       // 如果有时间戳并且results的长度为空
