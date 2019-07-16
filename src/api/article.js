@@ -12,8 +12,8 @@ export const getArticles = ({
   withTop // 是否包含置顶，进入页面第一次请求时要包含置顶文章，1-包含置顶，0-不包含
 }) => {
   return request({
-    method: '/app/v1_1/articles',
-    url: 'GET',
+    method: 'GET',
+    url: '/app/v1_1/articles',
     params: {
       channel_id: channelID,
       timestamp,
