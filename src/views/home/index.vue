@@ -1,8 +1,10 @@
 <template>
-  <div>
-    <div class="home">
-      <van-nav-bar title="首页" fixed/>
-      <van-tabs class="channel-tabs" v-model="activeChannelIndex">
+  <div class="home">
+    <van-nav-bar title="首页" fixed/>
+    <van-tabs class="channel-tabs" v-model="activeChannelIndex">
+        <div slot="nav-right" class="wap-nav">
+          <van-icon name="wap-nav" @click="isChannelShow = true"/>
+        </div>
         <van-tab
          v-for="channelItem in channels"
          :key="channelItem.id"
@@ -41,23 +43,34 @@
           </van-pull-refresh>
 
         </van-tab>
-      </van-tabs>
-    </div>
+    </van-tabs>
+    <!-- 频道管理层 -->
+    <homeChannel
+      v-model="isChannelShow"
+      :user-channels="channels"
+      :active-index="activeChannelIndex"
+    />
+    <!-- /频道管理层 -->
   </div>
 </template>
 <script>
 import { getUserChannels } from '@/api/channel'
 import { getArticles } from '@/api/article'
+import homeChannel from './components/channel'
 export default {
   name: 'homeIndex',
+  components: {
+    homeChannel
+  },
   data () {
     return {
       activeChannelIndex: 0,
-      list: [],
-      loading: false, // 用来控制加载中的状态
-      finished: false, // 用来控制是否加载完毕
-      isLoading: false, // 下拉刷新加载状态
-      channels: [] // 用户频道列表
+      // list: [],
+      // loading: false, // 用来控制加载中的状态
+      // finished: false, // 用来控制是否加载完毕
+      // isLoading: false, // 下拉刷新加载状态
+      channels: [], // 用户频道列表
+      isChannelShow: true // popup弹出框显示状态
     }
   },
   computed: {
@@ -89,7 +102,7 @@ export default {
     async loadChannel () {
       // 判断用户是否登录
       const { user } = this.$store.state
-      let channel = [] // 存放本地存储列表
+      let channel = [] // 存放本地存储频道列表
       if (user) {
         // 已登录
         const data = await getUserChannels()
@@ -211,5 +224,9 @@ export default {
 }
 .van-list {
   margin-top: 92px;
+}
+.wap-nav {
+  position: fixed;
+  right: 0;
 }
 </style>
