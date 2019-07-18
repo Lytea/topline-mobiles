@@ -22,10 +22,11 @@
         <van-grid-item
           v-for="(item, index) in userChannels"
           :key="item.id"
+          @click="handleChangeUserChannels(item, index)"
         >
           <span
             class="text"
-            :class="{ active: index === activeIndex }"
+            :class="{ active: index === activeIndex && !isEdit}"
           >{{ item.name }}</span>
           <van-icon v-show="isEdit" class="close-icon" name="close" />
         </van-grid-item>
@@ -113,6 +114,24 @@ export default {
       }
       // 如果用户没有登录，则将用户数据持久化到本地存储
       window.localStorage.setItem('channels', JSON.stringify(this.userChannels))
+    },
+    // 非编辑状态改变频道
+    handleChangeChannels (item, index) {
+      // console.log('changechannel')
+      this.$emit('update:active-index', index) // 发布一个自定义事件
+      this.$emit('input', false)
+    },
+    // 编辑状态删除频道
+    handleDeleteChannels () {
+      console.log('deletechannel')
+    },
+    handleChangeUserChannels (item, index) {
+      // 未编辑状态,在首页中跳转到对应频道列表的数据并且关闭popup弹出框
+      if (!this.isEdit) {
+        this.handleChangeChannels(item, index)
+      } else {
+        this.handleDeleteChannels(item, index)
+      }
     }
   }
 }

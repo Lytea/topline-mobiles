@@ -45,10 +45,14 @@
         </van-tab>
     </van-tabs>
     <!-- 频道管理层 -->
+    <!-- :active-index="activeChannelIndex" -->
+    <!-- @updata:active-index="activeChannelIndex=$event" -->
+    <!-- 可以简写为:active-index.sync="activeChannelIndex" -->
     <homeChannel
       v-model="isChannelShow"
       :user-channels="channels"
       :active-index="activeChannelIndex"
+      @update:active-index="activeChannelIndex=$event"
     />
     <!-- /频道管理层 -->
   </div>
