@@ -57,7 +57,7 @@
   </van-popup>
 </template>
 <script>
-import { getAllChannels } from '@/api/channel'
+import { getAllChannels, deleteUserChannel } from '@/api/channel'
 import { mapState } from 'vuex'
 export default {
   name: 'homeChannel',
@@ -129,10 +129,11 @@ export default {
       this.$emit('input', false)
     },
     // 编辑状态删除频道
-    handleDeleteChannels (item, index) {
+    async handleDeleteChannels (item, index) {
       // console.log('deletechannel')
       this.userChannels.splice(index, 1)
       if (this.user) {
+        await deleteUserChannel(item.id)
         return
       }
       window.localStorage.setItem('channels', JSON.stringify(this.userChannels))
