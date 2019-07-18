@@ -102,6 +102,13 @@ export default {
     // 加载所有频道列表（从接口中拿到的所有频道列表数据）
     async loadAllChannels () {
       const data = await getAllChannels()
+      data.channels.forEach(item => {
+        item.articles = [] // 用来存储当前文章的列表
+        item.timestamp = Date.now() // 存储下一页数据的时间戳
+        item.downPullLoading = false // 控制当前频道的下拉刷新 loading 状态
+        item.upPullLoading = false // 控制当前频道的上拉加载更多的 loading 状态
+        item.upPullFinished = false // 控制当前频道数据是否加载完毕
+      })
       this.allChannels = data.channels
     },
     // 频道推荐添加到我的频道列表中
@@ -122,14 +129,20 @@ export default {
       this.$emit('input', false)
     },
     // 编辑状态删除频道
-    handleDeleteChannels () {
-      console.log('deletechannel')
+    handleDeleteChannels (item, index) {
+      // console.log('deletechannel')
+      this.userChannels.splice(index, 1)
+      if (this.user) {
+        return
+      }
+      window.localStorage.setItem('channels', JSON.stringify(this.userChannels))
     },
     handleChangeUserChannels (item, index) {
       // 未编辑状态,在首页中跳转到对应频道列表的数据并且关闭popup弹出框
       if (!this.isEdit) {
         this.handleChangeChannels(item, index)
       } else {
+        // 编辑状态，删除用户频道列表
         this.handleDeleteChannels(item, index)
       }
     }
