@@ -38,7 +38,26 @@
                 v-for="articleItem in channelItem.articles"
                 :key="articleItem.art_id"
                 :title="articleItem.title"
-              />
+              >
+              <div slot="label">
+                <template v-if="articleItem.cover.type">
+                  <van-grid :border="false" :column-num="3">
+                    <van-grid-item
+                      v-for="(img, index) in articleItem.cover.images"
+                      :key="index"
+                    >
+                      <!-- 不推荐用index，但是这里不会涉及一些排序反转的问题，所以可以用index -->
+                      <van-image :src="img" lazy-load />
+                    </van-grid-item>
+                  </van-grid>
+                </template>
+                <p>
+                  <span>{{ articleItem.aut_name }}</span>&nbsp;
+                  <span>{{ articleItem.comm_count}}评论</span>&nbsp;
+                  <span>{{ articleItem.pubdate}}</span>
+                </p>
+              </div>
+              </van-cell>
             </van-list>
           </van-pull-refresh>
 
@@ -74,7 +93,7 @@ export default {
       // finished: false, // 用来控制是否加载完毕
       // isLoading: false, // 下拉刷新加载状态
       channels: [], // 用户频道列表
-      isChannelShow: true // popup弹出框显示状态
+      isChannelShow: false // popup弹出框显示状态
     }
   },
   computed: {
