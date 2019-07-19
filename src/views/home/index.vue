@@ -55,7 +55,7 @@
                   <span>{{ articleItem.aut_name }}</span>&nbsp;
                   <span>{{ articleItem.comm_count}}评论</span>&nbsp;
                   <span>{{ articleItem.pubdate | relativeTime}}</span>
-                  <van-icon class="close" name="close" @click="isMoreActionShow = true" />
+                  <van-icon class="close" name="close" @click="handleShowMoreAction(articleItem)" />
                 </p>
               </div>
               </van-cell>
@@ -76,7 +76,7 @@
     />
     <!-- /频道管理层 -->
     <!-- 更多操作例如加入黑名单不喜欢的 -->
-    <moreAction v-model="isMoreActionShow"/>
+    <moreAction v-model="isMoreActionShow" :current-article="currentArticle"/>
     <!-- /更多操作例如加入黑名单不喜欢的 -->
   </div>
 </template>
@@ -100,7 +100,8 @@ export default {
       // isLoading: false, // 下拉刷新加载状态
       channels: [], // 用户频道列表
       isChannelShow: false, // popup弹出框显示状态
-      isMoreActionShow: false // 更多操作的显示状态
+      isMoreActionShow: false, // 更多操作的显示状态
+      currentArticle: null // 要传给moreAction组件的值（当前点击的文章）
     }
   },
   computed: {
@@ -240,6 +241,13 @@ export default {
         withTop: 1 // 是否包含置顶数据
       })
       return data
+    },
+    handleShowMoreAction (article) {
+      // 将执行更多操作的文章记录起来
+      // console.log(article)
+      this.currentArticle = article
+      // 显示更多操作的弹框
+      this.isMoreActionShow = true
     }
   }
 }
