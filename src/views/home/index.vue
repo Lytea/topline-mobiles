@@ -55,6 +55,7 @@
                   <span>{{ articleItem.aut_name }}</span>&nbsp;
                   <span>{{ articleItem.comm_count}}评论</span>&nbsp;
                   <span>{{ articleItem.pubdate | relativeTime}}</span>
+                  <van-icon class="close" name="close" @click="isMoreActionShow = true" />
                 </p>
               </div>
               </van-cell>
@@ -74,16 +75,21 @@
       @update:active-index="activeChannelIndex=$event"
     />
     <!-- /频道管理层 -->
+    <!-- 更多操作例如加入黑名单不喜欢的 -->
+    <moreAction v-model="isMoreActionShow"/>
+    <!-- /更多操作例如加入黑名单不喜欢的 -->
   </div>
 </template>
 <script>
 import { getUserChannels } from '@/api/channel'
 import { getArticles } from '@/api/article'
 import homeChannel from './components/channel'
+import moreAction from './components/more-action'
 export default {
   name: 'homeIndex',
   components: {
-    homeChannel
+    homeChannel,
+    moreAction
   },
   data () {
     return {
@@ -93,7 +99,8 @@ export default {
       // finished: false, // 用来控制是否加载完毕
       // isLoading: false, // 下拉刷新加载状态
       channels: [], // 用户频道列表
-      isChannelShow: false // popup弹出框显示状态
+      isChannelShow: false, // popup弹出框显示状态
+      isMoreActionShow: false // 更多操作的显示状态
     }
   },
   computed: {
@@ -251,5 +258,9 @@ export default {
 .wap-nav {
   position: fixed;
   right: 0;
+}
+.channel-tabs .close {
+  float: right;
+  font-size: 30px;
 }
 </style>
