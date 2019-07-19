@@ -26,7 +26,7 @@
   </div>
 </template>
 <script>
-// import { dislikeArticle } from '@/api/article'
+import { dislikeArticle } from '@/api/article'
 export default {
   name: 'moreAction',
   props: {
@@ -44,8 +44,15 @@ export default {
     }
   },
   methods: {
-    handleDislike () {
-      console.log(this.currentArticle)
+    async handleDislike () {
+    //   console.log(this.currentArticle)
+      try {
+        await dislikeArticle(this.currentArticle.art_id)
+        // 移除客户端的那个文章
+        this.$emit('dislike-success')
+      } catch (err) {
+        this.$toast.fail('操作失败')
+      }
     }
   }
 

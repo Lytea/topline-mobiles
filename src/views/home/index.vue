@@ -76,7 +76,11 @@
     />
     <!-- /频道管理层 -->
     <!-- 更多操作例如加入黑名单不喜欢的 -->
-    <moreAction v-model="isMoreActionShow" :current-article="currentArticle"/>
+    <moreAction
+      v-model="isMoreActionShow"
+      :current-article="currentArticle"
+      @dislike-success="handleDislikeSuccess"
+    />
     <!-- /更多操作例如加入黑名单不喜欢的 -->
   </div>
 </template>
@@ -248,6 +252,16 @@ export default {
       this.currentArticle = article
       // 显示更多操作的弹框
       this.isMoreActionShow = true
+    },
+    handleDislikeSuccess () {
+      const articles = this.activeArticle.articles
+      const delIndex = articles.findIndex(item => item === this.currentArticle)
+      // console.log(delIndex) 拿到点击的元素和要移除的元素对应的索引
+      articles.splice(delIndex, 1) // 移除当前元素
+      // 关闭举报列表
+      this.isMoreActionShow = false
+      // 提示成功
+      this.$toast('操作成功')
     }
   }
 }
