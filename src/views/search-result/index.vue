@@ -44,6 +44,11 @@ export default {
       return this.$route.params.q
     }
   },
+  // 缓存之后deactivated在离开页面时会触发的钩子函数
+  deactivated () {
+    // 手动销毁，禁止缓存
+    this.$destroy()
+  },
   methods: {
     async onLoad () {
       await this.$sleep(800)
