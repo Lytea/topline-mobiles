@@ -15,6 +15,7 @@
 </template>
 <script>
 import { getSuggestion } from '@/api/search'
+import { debounce } from 'lodash'
 export default {
   name: 'search',
   data () {
@@ -27,7 +28,7 @@ export default {
     /**
        * 监视输入数据的改变，当数据发生改变，发请求获取搜索联想建议，展示到列表中
        */
-    async searchText (newVal) {
+    searchText: debounce(async function (newVal) {
       // console.log(newVal, oldVal)
       newVal = newVal.trim()
       // 非空判断
@@ -41,7 +42,7 @@ export default {
       } catch (err) {
         console.log(err)
       }
-    }
+    }, 500)
   }
 }
 </script>
