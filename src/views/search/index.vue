@@ -10,7 +10,10 @@
       v-for="item in suggestions"
       :key="item"
       :title="item"
-      icon="search" />
+      icon="search"
+    >
+      <div slot="title" v-html="highLight(item, searchText)"></div>
+    </van-cell>
   </div>
 </template>
 <script>
@@ -43,6 +46,11 @@ export default {
         console.log(err)
       }
     }, 500)
+  },
+  methods: {
+    highLight (text, keyword) {
+      return text.toLowerCase().split(keyword).join(`<span style="color: red">${keyword}</span>`)
+    }
   }
 }
 </script>
