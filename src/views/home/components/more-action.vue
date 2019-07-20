@@ -9,7 +9,7 @@
     <van-cell-group v-if="!isReportShow">
       <van-cell title="不感兴趣" icon="location-o" @click="handleDislike"/>
       <van-cell is-link title="反馈垃圾内容" icon="location-o" @click="isReportShow = true"/>
-      <van-cell title="拉黑作者" icon="location-o" />
+      <van-cell title="拉黑作者" icon="location-o" @click="handleAddBlankList"/>
     </van-cell-group>
     <van-cell-group v-else>
       <van-cell icon="arrow-left" @click="isReportShow = false"/>
@@ -27,6 +27,7 @@
 </template>
 <script>
 import { dislikeArticle } from '@/api/article'
+import { addBlankList } from '@/api/user'
 export default {
   name: 'moreAction',
   props: {
@@ -53,9 +54,17 @@ export default {
       } catch (err) {
         this.$toast.fail('操作失败')
       }
+    },
+    async handleAddBlankList () {
+      try {
+        await addBlankList(this.currentArticle.aut_id)
+        // 把当前点击的文章加入黑名单
+        this.$emit('add-blanklike-success')
+      } catch (err) {
+        this.$toast.fail('操作失败')
+      }
     }
   }
-
 }
 </script>
 <style lang="less" scoped>

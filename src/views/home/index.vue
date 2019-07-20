@@ -80,6 +80,7 @@
       v-model="isMoreActionShow"
       :current-article="currentArticle"
       @dislike-success="handleDislikeSuccess"
+      @add-blanklike-success="handleDislikeSuccess"
     />
     <!-- /更多操作例如加入黑名单不喜欢的 -->
   </div>

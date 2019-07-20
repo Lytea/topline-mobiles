@@ -13,3 +13,15 @@ export const login = ({ mobile, code }) => {
     }
   })
 }
+/**
+ * 拉黑用户(加入黑名单)
+ */
+export const addBlankList = userId => {
+  return request({
+    method: 'POST',
+    url: '/app/v1_0/user/blacklists',
+    data: {
+      target: userId
+    }
+  })
+}
