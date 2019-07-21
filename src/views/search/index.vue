@@ -9,15 +9,48 @@
         @search="handleSearch(searchText)"
       />
     </form>
-    <van-cell
-      v-for="item in suggestions"
-      :key="item"
-      :title="item"
-      icon="search"
-      @click="handleSearch(item)"
-    >
-      <div slot="title" v-html="highLight(item, searchText)"></div>
-    </van-cell>
+    <!-- 联想建议 -->
+    <van-cell-group v-if="suggestions.length && searchText.length">
+      <van-cell
+        v-for="item in suggestions"
+        :key="item"
+        :title="item"
+        icon="search"
+        @click="handleSearch(item)"
+      >
+        <div slot="title" v-html="highLight(item, searchText)"></div>
+      </van-cell>
+    </van-cell-group>
+    <!-- /联想建议 -->
+    <!-- 历史记录 -->
+    <van-cell-group v-else>
+      <van-cell title="历史记录">
+        <!-- 非删除状态展示 -->
+        <van-icon
+          v-show="!isDeleteShow"
+          slot="right-icon"
+          name="delete"
+          style="line-height: inherit;"
+          @click="isDeleteShow = true"
+        />
+        <!-- 删除状态显示 -->
+        <div v-show="isDeleteShow">
+          <span style="margin-right: 10px;">全部删除</span>
+          <!-- 把删除状态切换为非删除状态 -->
+          <span @click="isDeleteShow = false">完成</span>
+        </div>
+      </van-cell>
+      <!-- 删除状态显示 -->
+      <van-cell title="hello">
+        <van-icon
+          v-show="isDeleteShow"
+          slot="right-icon"
+          name="close"
+          style="line-height: inherit;"
+        />
+      </van-cell>
+    </van-cell-group>
+    <!-- /历史记录 -->
   </div>
 </template>
 <script>
@@ -28,7 +61,8 @@ export default {
   data () {
     return {
       searchText: '', // 搜索框文字
-      suggestions: [] // 联想建议
+      suggestions: [], // 联想建议
+      isDeleteShow: false // 全部删除和完成 的状态
     }
   },
   watch: {
