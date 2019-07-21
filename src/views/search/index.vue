@@ -41,7 +41,10 @@
         </div>
       </van-cell>
       <!-- 删除状态显示 -->
-      <van-cell title="hello">
+      <van-cell
+        v-for="item in searchHistories"
+        :key="item"
+        :title="item">
         <van-icon
           v-show="isDeleteShow"
           slot="right-icon"
@@ -62,7 +65,8 @@ export default {
     return {
       searchText: '', // 搜索框文字
       suggestions: [], // 联想建议
-      isDeleteShow: false // 全部删除和完成 的状态
+      isDeleteShow: false, // 全部删除 完成和删除的状态
+      searchHistories: JSON.parse(window.localStorage.getItem('search-histories')) || []// 存储历史记录
     }
   },
   watch: {
@@ -83,7 +87,11 @@ export default {
       } catch (err) {
         console.log(err)
       }
-    }, 500)
+    }, 500),
+    searchHistories () {
+      const data = JSON.stringify(this.searchHistories)
+      window.localStorage.setItem('search-histories', data)
+    }
   },
   methods: {
     // 关键字高亮
@@ -94,6 +102,11 @@ export default {
       if (!queryText.length) {
         return
       }
+      // 记录搜索历史记录
+      const data = new Set(this.searchText)
+      data.add(queryText)
+      this.searchHistories = [...data]
+      // 路由跳转
       this.$router.push({
         name: 'search-result',
         params: {
